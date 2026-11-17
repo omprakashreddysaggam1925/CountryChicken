@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: countrychicken-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-countrychicken}
+      POSTGRES_USER: ${POSTGRES_USER:-countrychicken}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-countrychicken}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - countrychicken-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  countrychicken-postgres-data:
